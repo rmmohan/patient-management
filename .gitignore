@@ -1,2 +1,4 @@
 .idea/
 /db_volumes
+/.idea
+.idea/compiler.xml
