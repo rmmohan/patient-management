@@ -1,5 +1,7 @@
-package com.rv.pm.patientservice.exception;
+package com.rv.pm.patientservice.config;
 
+import com.rv.pm.patientservice.exception.EmailAlreadyExistsException;
+import com.rv.pm.patientservice.exception.PatientNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

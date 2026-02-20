@@ -4,13 +4,17 @@ import billing.BillingResponse;
 import billing.BillingServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 @Service
 @Slf4j
 public class BillingServiceGrpcClient {
+    private final ManagedChannel channel;
     private final BillingServiceGrpc.BillingServiceBlockingStub blockingStub;
 
     public BillingServiceGrpcClient(
@@ -19,7 +23,7 @@ public class BillingServiceGrpcClient {
     ) {
         log.info("Initializing BillingServiceGrpcClient with host: {} and port: {}", host, port);
 
-        ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port)
+        channel = ManagedChannelBuilder.forAddress(host, port)
             .usePlaintext()
             .build();
 
@@ -39,4 +43,11 @@ public class BillingServiceGrpcClient {
         log.info("Received billing response: {}", response);
         return response;
     }
+
+    @PreDestroy
+    public void shutdown() throws InterruptedException {
+        log.info("Shutting down gRPC channel...");
+        channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
+    }
 }
+
