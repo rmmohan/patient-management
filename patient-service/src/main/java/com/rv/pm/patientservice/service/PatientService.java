@@ -7,6 +7,7 @@ import com.rv.pm.patientservice.exception.PatientNotFoundException;
 import com.rv.pm.patientservice.model.Patient;
 import com.rv.pm.patientservice.repository.PatientRepository;
 import com.rv.pm.patientservice.service.grpc.BillingServiceGrpcClient;
+import com.rv.pm.patientservice.service.kafka.KafkaProducer;
 import lombok.AllArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PatientService {
 
+    private final KafkaProducer kafkaProducer;
     private PatientRepository patientRepository;
     private BillingServiceGrpcClient billingServiceGrpcClient;
 
@@ -38,6 +40,7 @@ public class PatientService {
 
         Patient patient = mapPatientRequestDTOToPatient(patientRequestDTO);
         billingServiceGrpcClient.createBillingAccount(patient.getId().toString(), patient.getName(), patient.getEmail());
+        kafkaProducer.sendEvent(patient);
 
         return mapPatientToPatientResponseDTO(patient);
     }
