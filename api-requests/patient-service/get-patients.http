@@ -1,4 +1,17 @@
-### GET request to retrieve a list of patients from the patient service
-GET http://localhost:4000/patients
+### Get authorization token from Keycloak
+POST http://auth-service:8080/realms/patient-management/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&client_id=spring-patient-management-client
+&client_secret=7tvCh2qjT8cVO9CayH5i1N4yc9ZM5bQC
+
+> {%
+client.global.set("access_token", response.body.access_token);
+%}
 
 ###
+
+### GET request to retrieve a list of patients from the patient service with authorization
+GET http://localhost:9000/api/patients
+Authorization: Bearer {{access_token}}
