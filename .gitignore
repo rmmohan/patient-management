@@ -2,3 +2,4 @@
 /db_volumes
 /.idea
 .idea/compiler.xml
+/infrastructure/target
